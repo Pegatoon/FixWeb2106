@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý truyện và chương</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* RESET + GIAO DIỆN GỐC (giữ nguyên) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .sidebar a,
+        .menu li {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sidebar a:hover,
+        .menu li:hover {
+            background: #495057;
+        }
+
+        .sidebar a.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .search-bar input {
+            border: none;
+            padding: 8px 12px;
+            outline: none;
+            width: 250px;
+            height: 30px;
+        }
+
+        .search-bar button {
+            border: none;
+            background-color: #eee;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .content h2 {
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #eee;
+            font-weight: bold;
+        }
+
+        .actions i {
+            margin: 0 5px;
+            cursor: pointer;
+            color: #444;
+            transition: color 0.2s;
+        }
+
+        .actions i:hover {
+            color: #000;
+        }
+
+        /* POPUP */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 500px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #888;
+        }
+
+        .modal input,
+        .modal textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../Home/image/z6672631562592_50bb74da1db4c2e3f301e11fbb0569fd.jpg" alt="Logo" />
+            <h2>PegaToon</h2>
+        </div>
+        <a href="../Home/Dashboard.html">Tổng quan</a>
+        <a href="../Admin/quanlytruyenchuong.html">Quản lý truyện & chương</a>
+        <a href="../Admin/quanlytheloai.html">Quản lý thể loại</a>
+        <a href="../Admin/quanlynguoidung.html">Quản lý người dùng</a>
+        <a href="../Admin/tacgia.html">Quản lý tác giả</a>
+        <a href="../Admin/baocao.html">Quản lý báo cáo</a>
+        <a href="../Admin/coupons.html">Quản lý coupons</a>
+        <a href="../Admin/quanlyvip.html">Quản lý VIP</a>
+    </div>
+
+    <main class="main">
+        <header class="header">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm truyện..." />
+                <button onclick="searchTable()"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-bell"></i><span>Admin</span>
+            </div>
+        </header>
+
+        <section class="content">
+            <h2>
+                QUẢN LÝ TRUYỆN VÀ CHƯƠNG
+                <button class="btn" onclick="openModal('add')">+ Thêm mới</button>
+            </h2>
+            <table id="storyTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên truyện</th>
+                        <th>Tác giả</th>
+                        <th>Số chương</th>
+                        <th>Ngày đăng</th>
+                        <th>Loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="storyBody">
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- MODAL THÊM/SỬA -->
+    <div class="modal" id="storyModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h3 id="modalTitle">Thêm truyện mới</h3>
+            <input type="text" id="titleInput" placeholder="Tên truyện" />
+            <input type="text" id="authorInput" placeholder="Tác giả" />
+            <input type="number" id="chaptersInput" placeholder="Số chương" />
+            <input type="text" id="dateInput" placeholder="Ngày đăng (dd/mm/yyyy)" />
+            <button class="btn" onclick="saveStory()">Lưu</button>
+        </div>
+    </div>
+
+    <!-- MODAL XEM CHI TIẾT -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeDetail()">&times;</button>
+            <h3>Chi tiết truyện</h3>
+            <div id="storyDetail"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentEdit = null;
+        let currentEditId = null;
+        function searchTable() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            document.querySelectorAll("#storyBody tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+            });
+        }
+
+        function openModal(type) {
+            currentEdit = null;
+            currentEditId = null; // <- thêm dòng này
+            document.getElementById("storyModal").style.display = "block";
+            document.getElementById("modalTitle").innerText = "Thêm truyện mới";
+            document.getElementById("titleInput").value = "";
+            document.getElementById("authorInput").value = "";
+            document.getElementById("chaptersInput").value = "";
+            document.getElementById("dateInput").value = "";
+        }
+
+        function closeModal() {
+            document.getElementById("storyModal").style.display = "none";
+        }
+
+        function saveStory() {
+            const title = document.getElementById("titleInput").value;
+            const author = document.getElementById("authorInput").value;
+            const chapters = document.getElementById("chaptersInput").value;
+            const date = document.getElementById("dateInput").value;
+
+            if (!title || !author || !chapters || !date) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            const mangaData = { title, author, chapters, date, type: "VIP" };
+
+            if (currentEditId) {
+                // Nếu đang chỉnh sửa
+                fetch(`http://localhost:3000/api/mangas/${currentEditId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(mangaData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Cập nhật truyện thành công!");
+                            loadMangas();
+                            closeModal();
+                        } else {
+                            alert("Cập nhật thất bại!");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("❌ Lỗi cập nhật manga:", error);
+                        alert("Có lỗi khi cập nhật!");
+                    });
+            } else {
+                // Thêm mới
+                fetch('http://localhost:3000/api/mangas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(mangaData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Thêm truyện thành công!");
+                            loadMangas();
+                            closeModal();
+                        } else {
+                            alert("Thêm thất bại!");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("❌ Lỗi thêm manga:", error);
+                        alert("Có lỗi khi thêm!");
+                    });
+            }
+        }
+
+        function editStory(el) {
+            currentEdit = el.closest("tr");
+            currentEditId = currentEdit.getAttribute('data-id'); // lưu id của truyện đang sửa
+            const cells = currentEdit.querySelectorAll("td");
+            document.getElementById("modalTitle").innerText = "Chỉnh sửa truyện";
+            document.getElementById("titleInput").value = cells[1].innerText;
+            document.getElementById("authorInput").value = cells[2].innerText;
+            document.getElementById("chaptersInput").value = cells[3].innerText;
+            document.getElementById("dateInput").value = cells[4].innerText;
+            document.getElementById("storyModal").style.display = "block";
+        }
+
+        function deleteRow(el) {
+            if (confirm("Bạn chắc chắn muốn xoá truyện này?")) {
+                const row = el.closest("tr");
+                const id = row.getAttribute('data-id');
+
+                fetch(`http://localhost:3000/api/mangas/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            row.remove();
+                            alert("Xoá thành công!");
+                        } else {
+                            alert("Xoá thất bại!");
+                        }
+                    })
+                    .catch(error => {
+                        alert("Lỗi xoá: " + error);
+                    });
+            }
+        }
+
+
+
+        function viewDetail(el) {
+            const cells = el.closest("tr").querySelectorAll("td");
+            const detailHTML = `
+        <p><strong>Tên truyện:</strong> ${cells[1].innerText}</p>
+        <p><strong>Tác giả:</strong> ${cells[2].innerText}</p>
+        <p><strong>Số chương:</strong> ${cells[3].innerText}</p>
+        <p><strong>Ngày đăng:</strong> ${cells[4].innerText}</p>`;
+            document.getElementById("storyDetail").innerHTML = detailHTML;
+            document.getElementById("detailModal").style.display = "block";
+        }
+
+        function closeDetail() {
+            document.getElementById("detailModal").style.display = "none";
+        }
+    </script>
+</body>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+    // Khởi tạo Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDUfWVlly9sKokNHY-mYvH3r14WaV0HUjM",
+        authDomain: "datn-1fc4c.firebaseapp.com",
+        databaseURL: "https://datn-1fc4c-default-rtdb.firebaseio.com", // ← Sửa đúng URL này
+        projectId: "datn-1fc4c",
+        storageBucket: "datn-1fc4c.appspot.com",
+        messagingSenderId: "562906844234",
+        appId: "1:562906844234:web:29739eae72d70788492ab3",
+        measurementId: "G-7W0ZMD51CQ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Load dữ liệu bảng từ firebase
+    function loadMangas() {
+        const tbody = document.getElementById("storyBody");
+        tbody.innerHTML = "";
+        let index = 1;
+
+        database.ref("mangas").once("value", snapshot => {
+            snapshot.forEach(childSnapshot => {
+                const manga = childSnapshot.val();
+                const id = childSnapshot.key;
+                const row = document.createElement("tr");
+                row.setAttribute("data-id", id);
+                row.innerHTML = `
+                <td>${index++}</td>
+                <td>${manga.title}</td>
+                <td>${manga.author}</td>
+                <td>${manga.chapters}</td>
+                <td>${manga.date}</td>
+                <td>${manga.type || 'VIP'}</td>
+                <td class="actions">
+                    <i class="fas fa-eye" onclick="viewDetail(this)"></i>
+                    <i class="fas fa-pen" onclick="editStory(this)"></i>
+                    <i class="fas fa-trash" onclick="deleteRow(this)"></i>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+        });
+    }
+
+
+
+    // Gọi hàm khi trang vừa load xong
+    window.onload = loadMangas;
+</script>
+
+
+</html>

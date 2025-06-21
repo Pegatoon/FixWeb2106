@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý người dùng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ===== RESET + CƠ BẢN ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 220px;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #007bff;
+        }
+
+        /* ===== MAIN + TOPBAR ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* ===== TÌM KIẾM ===== */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .search-bar input {
+            border: none;
+            padding: 8px 12px;
+            outline: none;
+            width: 250px;
+            height: 30px;
+        }
+
+        .search-bar button {
+            border: none;
+            background-color: #eee;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        /* ===== HEADER-PROFILE ===== */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .profile img {
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        /* ===== BẢNG QUẢN LÝ NGƯỜI DÙNG ===== */
+        .content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #eee;
+            font-weight: bold;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .actions i {
+            margin: 0 5px;
+            cursor: pointer;
+            color: #444;
+            transition: color 0.2s;
+        }
+
+        .actions i:hover {
+            color: #000;
+        }
+
+        /* ===== TRẠNG THÁI ===== */
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status.active {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status.locked {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* ===== ICON FONT AWESOME ===== */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../Home/image/z6672631562592_50bb74da1db4c2e3f301e11fbb0569fd.jpg" alt="PegaToon Logo" />
+            <h2>PegaToon</h2>
+        </div>
+        <a href="../Home/Dashboard.html">Tổng quan</a>
+        <a href="../Admin/quanlytruyenchuong.html">Quản lý truyện & chương</a>
+        <a href="../Admin/quanlytheloai.html">Quản lý thể loại</a>
+        <a href="../Admin/quanlynguoidung.html" class="active">Quản lý người dùng</a>
+        <a href="../Admin/tacgia.html">Quản lý tác giả</a>
+        <a href="../Admin/baocao.html">Quản lý báo cáo</a>
+        <a href="../Admin/coupons.html">Quản lý coupons</a>
+        <a href="../Admin/quanlyvip.html">Quản lý VIP</a>
+    </div>
+    <div class="content">
+        <h2>Quản lý người dùng</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên người dùng</th>
+                    <th>Ảnh đại diện</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Đăng nhập bằng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JS sẽ render vào đây -->
+            </tbody>
+        </table>
+
+    </div>
+    <!-- ✨ Modal Hiển thị thông tin người dùng -->
+    <div id="viewModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+    background:white; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:9999;">
+        <h3>Thông tin người dùng</h3>
+        <div id="viewContent"></div>
+        <button onclick="closeModal('viewModal')">Đóng</button>
+    </div>
+
+    <!-- ✨ Modal Xác nhận xoá -->
+    <div id="deleteModal" style="display:none; position:fixed; top:30%; left:50%; transform:translateX(-50%);
+    background:white; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:9999;">
+        <p id="deleteText"></p>
+        <button id="confirmDeleteBtn">Xoá</button>
+        <button onclick="closeModal('deleteModal')">Huỷ</button>
+    </div>
+
+    <script>
+        // Gọi API render bảng
+        fetch('http://localhost:3000/api/firebase-users')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector('table tbody');
+                tbody.innerHTML = '';
+
+                data.forEach((user, index) => {
+                    const tr = document.createElement('tr');
+                    const statusClass = user.disabled ? 'locked' : 'active';
+                    const statusText = user.disabled ? 'Đã khóa' : 'Hoạt động';
+
+                    tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${user.email}</td>
+        <td><img src="${user.photoURL || 'https://via.placeholder.com/40'}" class="avatar"></td>
+        <td>${user.role || 'Người dùng'}</td>
+        <td><span class="status ${statusClass}">${statusText}</span></td>
+        <td>${user.metadata.creationTime}</td>
+        <td>${user.providerId || 'password'}</td>
+        <td class="actions">
+          <i class="fas fa-eye" title="Xem" onclick='viewUser(${JSON.stringify(user)})'></i>
+          <i class="fas fa-edit" title="Sửa" onclick='editUser(${JSON.stringify(user)})'></i>
+          <i class="fas fa-trash" title="Xóa" onclick='confirmDelete("${user.uid}")'></i>
+        </td>
+      `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => console.error('Lỗi lấy dữ liệu:', err));
+
+
+
+        // Hiển thị Modal
+        function openModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Xem người dùng
+        function viewUser(user) {
+            const content = `
+        <p><strong>UID:</strong> ${user.uid}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Xác thực email:</strong> ${user.emailVerified ? 'Đã xác thực' : 'Chưa xác thực'}</p>
+        <p><strong>Trạng thái:</strong> ${user.disabled ? 'Đã khóa' : 'Hoạt động'}</p>
+        <p><strong>Ngày tạo:</strong> ${user.metadata.creationTime}</p>
+    `;
+            document.getElementById('viewContent').innerHTML = content;
+            openModal('viewModal');
+        }
+
+
+        // Chỉnh sửa (demo console log)
+        function editUser(user) {
+            alert('Chức năng chỉnh sửa đang được phát triển!');
+            console.log('Dữ liệu cần sửa:', user);
+        }
+
+        // Xác nhận xoá
+        function confirmDelete(id) {
+            document.getElementById('deleteText').innerText = `Bạn có chắc muốn xoá người dùng có ID ${id} không?`;
+            openModal('deleteModal');
+
+            document.getElementById('confirmDeleteBtn').onclick = function () {
+                deleteUser(id);
+            };
+        }
+
+        // Xoá người dùng
+        function deleteUser(id) {
+            fetch(`http://localhost:3000/api/users/${id}`, {
+                method: 'DELETE'
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert('Đã xoá thành công!');
+                        location.reload();
+                    } else {
+                        alert('Xoá thất bại!');
+                    }
+                })
+                .catch(err => console.error('Lỗi xoá:', err));
+        }
+    </script>
+
+
+</body>
+
+</html>

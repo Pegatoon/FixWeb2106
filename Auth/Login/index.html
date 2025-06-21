@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-box">
+            <img src="logoo.jpg" alt="Logo" class="logo">
+            <h2>Đăng nhập</h2>
+            <p class="welcome">Chào mừng trở lại! Vui lòng nhập thông tin đăng nhập của bạn.</p>
+            <input type="text" id="username" placeholder="Username" class="input" />
+            <input type="password" id="password" placeholder="Password" class="input" />
+            <div class="options">
+                <label><input type="checkbox" /> Ghi nhớ</label>
+                <a href="../ForgotPassword/index.html">Quên mật khẩu</a>
+            </div>
+            <button class="login-btn" onclick="login()">Đăng nhập</button>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Đăng nhập thành công!");
+                        window.location.href = "Dashboard.html";
+                    } else {
+                        alert("Sai tài khoản hoặc mật khẩu!");
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Lỗi:', error);
+                    alert("Có lỗi xảy ra, thử lại sau!");
+                });
+        }
+
+    </script>
+</body>
+
+</html>

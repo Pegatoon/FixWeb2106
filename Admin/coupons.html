@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quản lý Coupons</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .sidebar a.active {
+            background: #007bff;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .search input {
+            padding-left: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search {
+            position: relative;
+        }
+
+        .search::before {
+            content: "\f002";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 20px;
+            color: #555;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .profile img {
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .overview {
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* --- Coupons Table Styling --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: #28a745;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../Home/image/z6672631562592_50bb74da1db4c2e3f301e11fbb0569fd.jpg" alt="Logo" />
+            <h2>PegaToon</h2>
+        </div>
+        <a href="../Home/Dashboard.html">Tổng quan</a>
+        <a href="../Admin/quanlytruyenchuong.html">Quản lý truyện & chương</a>
+        <a href="../Admin/quanlytheloai.html">Quản lý thể loại</a>
+        <a href="../Admin/quanlynguoidung.html">Quản lý người dùng</a>
+        <a href="../Admin/tacgia.html">Quản lý tác giả</a>
+        <a href="../Admin/baocao.html">Quản lý báo cáo</a>
+        <a href="../Admin/coupons.html" class="active">Quản lý coupons</a>
+        <a href="../Admin/quanlyvip.html">Quản lý VIP</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="search">
+                <input type="text" placeholder="Tìm kiếm dữ liệu & báo cáo..." />
+            </div>
+            <div class="icons">
+                <i class="fas fa-comment"></i>
+                <i class="fas fa-envelope"></i>
+                <i class="fas fa-bell"></i>
+                <div class="profile">
+                    <img src="https://i.pravatar.cc/40" alt="User" />
+                    <span>Người Dùng</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nội dung quản lý coupons -->
+        <div class="overview">
+            <h1 style="margin-bottom: 20px;">🎁 Quản lý Coupons</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã Coupon</th>
+                        <th>Giảm Giá (%)</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>NGOC30</td>
+                        <td>30%</td>
+                        <td>30/06/2025</td>
+                        <td>
+                            <button class="btn btn-edit">Sửa</button>
+                            <button class="btn btn-delete">Xóa</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

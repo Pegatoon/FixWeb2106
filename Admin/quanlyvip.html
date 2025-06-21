@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý người dùng VIP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* Reset + Font */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #007bff;
+        }
+
+        /* Main layout */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        /* Search bar */
+        .search {
+            position: relative;
+        }
+
+        .search input {
+            padding-left: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search::before {
+            content: "\f002";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        /* Profile & dropdown */
+        .icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 20px;
+            color: #555;
+            position: relative;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .profile img {
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .dropdown {
+            position: relative;
+            user-select: none;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            min-width: 180px;
+            z-index: 10;
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f0f0f0;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .card i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .card small {
+            font-weight: 400;
+            font-size: 14px;
+            display: block;
+            margin-top: 6px;
+            opacity: 0.9;
+        }
+
+        /* Filter */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filters input,
+        .filters select,
+        .filters button {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Table user list */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        /* Detail popup */
+        .detail-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            z-index: 1000;
+        }
+
+        .user-history,
+        .user-info {
+            margin-bottom: 20px;
+        }
+
+        /* Notification section */
+        .notification-section textarea {
+            width: 100%;
+            height: 80px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .notification-section button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .notification-section button:hover {
+            background: #0056b3;
+        }
+
+        /* Charts (canvas) */
+        .charts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .close-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 24px;
+            background-color: #f44336;
+            /* đỏ nhẹ */
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background-color: #d32f2f;
+            transform: scale(1.05);
+        }
+
+        canvas {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100% !important;
+            max-width: 400px;
+            height: 300px !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Sidebar + main layout giữ nguyên -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="../Home/image/z6672631562592_50bb74da1db4c2e3f301e11fbb0569fd.jpg" alt="PegaToon Logo" />
+            <h2>PegaToon</h2>
+        </div>
+        <a href="../Home/Dashboard.html">Tổng quan</a>
+        <a href="../Admin/quanlytruyenchuong.html">Quản lý truyện & chương</a>
+        <a href="../Admin/quanlytheloai.html">Quản lý thể loại</a>
+        <a href="../Admin/quanlynguoidung.html">Quản lý người dùng</a>
+        <a href="../Admin/tacgia.html">Quản lý tác giả</a>
+        <a href="../Admin/baocao.html">Quản lý báo cáo</a>
+        <a href="../Admin/coupons.html">Quản lý coupons</a>
+        <a href="../Admin/quanlyvip.html" class="active">Quản lý VIP</a>
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <h1>Quản lý người dùng VIP</h1>
+        </div>
+
+        <!-- Cards, filters, table giữ nguyên -->
+        <div class="cards">
+            <div class="card">
+                <div>Tổng VIP hiện tại</div>
+                <h2>12</h2>
+            </div>
+            <div class="card">
+                <div>VIP sắp hết hạn</div>
+                <h2>3</h2>
+            </div>
+            <div class="card">
+                <div>VIP mới trong tháng</div>
+                <h2>5</h2>
+            </div>
+            <div class="card">
+                <div>Tổng doanh thu VIP</div>
+                <h2>2.000.000đ</h2>
+            </div>
+        </div>
+
+        <div class="filters">
+            <select id="statusFilter">
+                <option value="">-- Trạng thái --</option>
+                <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Bị khóa">Bị khóa</option>
+            </select>
+            <input type="date" id="startDate" />
+            <input type="date" id="endDate" />
+            <button onclick="applyFilters()">Tìm kiếm</button>
+        </div>
+
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên người dùng</th>
+                    <th>Ảnh đại diện</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Loại đăng nhập</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-status="Đang hoạt động" data-date="2024-06-01">
+                    <td>1</td>
+                    <td>Nguyễn Văn A</td>
+                    <td><img src="https://i.pravatar.cc/50?img=1" alt="avatar" /></td>
+                    <td>VIP</td>
+                    <td>Đang hoạt động</td>
+                    <td>2024-06-01</td>
+                    <td>Email</td>
+                    <td><button onclick="toggleDetail('Nguyễn Văn A')">Xem chi tiết</button></td>
+                </tr>
+                <tr data-status="Bị khóa" data-date="2024-05-15">
+                    <td>2</td>
+                    <td>Trần Thị B</td>
+                    <td><img src="https://i.pravatar.cc/50?img=2" alt="avatar" /></td>
+                    <td>VIP</td>
+                    <td>Bị khóa</td>
+                    <td>2024-05-15</td>
+                    <td>SĐT</td>
+                    <td><button onclick="toggleDetail('Trần Thị B')">Xem chi tiết</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Chi tiết người dùng -->
+        <div class="detail-container" id="detailContainer">
+            <h2>Chi tiết người dùng: <span id="userName"></span></h2>
+
+            <div class="user-info">
+                <strong>Thông tin cá nhân:</strong>
+                <p>Email/SĐT: user@example.com</p>
+                <p>Tài khoản: Đang hoạt động</p>
+                <p>Quyền hạn đặc biệt: Có</p>
+            </div>
+
+            <div class="user-history">
+                <strong>Lịch sử gia hạn VIP:</strong>
+                <ul>
+                    <li>Gia hạn 1 tháng - 01/06/2024</li>
+                    <li>Gia hạn 3 tháng - 01/03/2024</li>
+                </ul>
+
+                <strong>Lịch sử thanh toán:</strong>
+                <ul>
+                    <li>01/06/2024 - 50.000đ</li>
+                    <li>01/03/2024 - 120.000đ</li>
+                </ul>
+
+                <strong>Truyện đã đọc:</strong>
+                <ul>
+                    <li>Truyện A (Đọc gần nhất: 15/06/2024)</li>
+                    <li>Truyện B (Đọc gần nhất: 12/06/2024)</li>
+                </ul>
+
+                <strong>Số truyện đã thanh toán:</strong> 8<br />
+                <strong>Số truyện đã đọc:</strong> 20
+            </div>
+
+            <div class="notification-section">
+                <strong>Gửi thông báo nội bộ:</strong>
+                <textarea id="notificationText" placeholder="Nhập nội dung thông báo..."></textarea>
+                <button onclick="sendNotification()">Gửi thông báo</button>
+            </div>
+
+            <button class="close-btn" onclick="closeDetail()">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetail(name) {
+            const detail = document.getElementById('detailContainer');
+            const nameSpan = document.getElementById('userName');
+            if (detail.style.display === 'block' && nameSpan.textContent === name) {
+                detail.style.display = 'none';
+                nameSpan.textContent = '';
+            } else {
+                detail.style.display = 'block';
+                nameSpan.textContent = name;
+            }
+        }
+
+        function closeDetail() {
+            document.getElementById('detailContainer').style.display = 'none';
+            document.getElementById('userName').textContent = '';
+        }
+
+        function sendNotification() {
+            const message = document.getElementById('notificationText').value.trim();
+            const name = document.getElementById('userName').textContent;
+            if (message) {
+                console.log(`Gửi thông báo cho ${name}: ${message}`);
+                alert('Thông báo đã được gửi!');
+                document.getElementById('notificationText').value = '';
+            } else {
+                alert('Vui lòng nhập nội dung thông báo!');
+            }
+        }
+
+        function applyFilters() {
+            const status = document.getElementById('statusFilter').value;
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const rows = document.querySelectorAll('#userTable tbody tr');
+
+            rows.forEach(row => {
+                const userStatus = row.getAttribute('data-status');
+                const userDate = new Date(row.getAttribute('data-date'));
+                let show = true;
+
+                if (status && userStatus !== status) show = false;
+                if (!isNaN(startDate) && userDate < startDate) show = false;
+                if (!isNaN(endDate) && userDate > endDate) show = false;
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+
+</html>
